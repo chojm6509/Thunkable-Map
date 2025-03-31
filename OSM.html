@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OSM with Marker</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <style>
+        #map { height: 100vh; }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+    <script>
+        // Default location (New York)
+        let lat = 40.7128;
+        let lon = -74.0060;
+
+        // Create the map
+        let map = L.map('map').setView([lat, lon], 13);
+
+        // Load OpenStreetMap tiles
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(map);
+
+        // Add marker
+        let marker = L.marker([lat, lon]).addTo(map)
+            .bindPopup("User Location")
+            .openPopup();
+
+        // Function to update marker dynamically
+        function updateMarker(newLat, newLon) {
+            marker.setLatLng([newLat, newLon])
+                .bindPopup("Updated Location")
+                .openPopup();
+            map.setView([newLat, newLon], 13);
+        }
+
+        // Get user location from URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.has('lat') && urlParams.has('lon')) {
+            lat = parseFloat(urlParams.get('lat'));
+            lon = parseFloat(urlParams.get('lon'));
+            updateMarker(lat, lon);
+        }
+    </script>
+</body>
+</html>
